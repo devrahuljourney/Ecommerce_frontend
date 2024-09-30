@@ -24,7 +24,7 @@ export default function Navbar() {
   return (
     <div>
       {/* Top Navbar - Hidden in mobile view */}
-      <div className='bg-black text-[14px] p-2 md:px-[8%] text-white flex flex-row justify-between items-center w-full hidden md:flex'>
+      <div className='bg-black text-[14px]  p-2 md:px-[8%] text-white flex flex-row justify-between items-center w-full hidden md:flex'>
         <div className='flex w-[50%] justify-center items-center space-x-4'>
           <p className='flex items-center'>
             <a href="tel:+1234567890" className='flex justify-center flex-row items-center'>
@@ -70,7 +70,7 @@ export default function Navbar() {
       </div>
 
       {/* Main Navbar */}
-      <div className='py-2 w-[80%] lg:ml-[17%] mx-auto flex flex-row justify-between md:justify-center items-center'>
+      <div className='py-2  w-[80%] lg:ml-[17%] mx-auto flex flex-row justify-between md:justify-center items-center'>
         <NavLink to="/" className="flex lg:w-[10%] md:w-[30%] gap-2">
           <img src={logo} alt='logo' />
           <img src={logoName} alt='logoName' />

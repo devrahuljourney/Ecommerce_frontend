@@ -1,6 +1,7 @@
 import React from 'react';
 import Typewriter from 'typewriter-effect';
 import SearchFilter from './SearchFilter';
+import Category from './Category';
 
 // Import the image correctly
 const background = require('../../assets/background.png');
@@ -15,8 +16,8 @@ export default function SearchFilterAndCategoryList() {
       <div className="absolute inset-0 bg-black bg-opacity-80"></div>
 
       {/* Typewriter text */}
-      <div className="relative z-10 w-full flex flex-col items-center justify-center h-full">
-        <div className="whitespace-nowrap flex flex-col justify-center items-center ">
+      <div className="relative p-5 gap-4 z-10 w-full flex flex-col items-center justify-center h-full">
+        <div className="whitespace-nowrap mt-[4%] flex flex-col gap-2 justify-center items-center ">
           <p className="text-[25px] md:text-[36px] text-white font-bold inline-flex items-center">
             Your one stop shop for&nbsp;
             <span className="text-green">
@@ -40,11 +41,12 @@ export default function SearchFilterAndCategoryList() {
               />
             </span>
           </p>
-          <p className="text-[18px] md:text-[24px] text-white font-light">
+          <p className="text-[18px]  md:text-[24px] text-white font-semibold">
             and beyond. We got you covered.
           </p>
         </div>
         <SearchFilter />
+        <Category/>
       </div>
     </div>
   );
