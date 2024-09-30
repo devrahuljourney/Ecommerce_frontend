@@ -1,15 +1,15 @@
 
 
 import { toast } from 'react-toastify';
-import { apiconnector } from './apiconnector';
 import { categoryEndpoints } from '../api';
-const {CREATE_CATEGORY, GET_ALL_CATEGORIES, GET_CATEGORY_BY_ID, } = categoryEndpoints
+import { apiconnector } from '../apiconnector';
+const {CREATECATEGORY, GET_ALL_CATEGORY , GET_CATEGORY_BY_ID, } = categoryEndpoints
 
 
 export const createCategory = async (categoryData) => {
     const toastId = toast.loading("Creating category...");
     try {
-        const response = await apiconnector("POST", CREATE_CATEGORY, categoryData);
+        const response = await apiconnector("POST", CREATECATEGORY, categoryData);
         if (response?.data?.success) {
             toast.success("Category created successfully");
             return response.data.category; 
@@ -29,8 +29,10 @@ export const fetchCategoryById = async (id) => {
     const toastId = toast.loading("Loading category...");
     try {
         const response = await apiconnector("GET", GET_CATEGORY_BY_ID(id));
+        
         if (response?.data?.success) {
             toast.success("Category fetched successfully");
+            console.log("RESPONSE FROM FETCH ALL CATEGORY ", response )
             return response.data.category; 
         } else {
             throw new Error("Category not found");
@@ -48,9 +50,11 @@ export const fetchCategoryById = async (id) => {
 export const fetchAllCategories = async () => {
     const toastId = toast.loading("Loading categories...");
     try {
-        const response = await apiconnector("GET", GET_ALL_CATEGORIES);
+        const response = await apiconnector("GET", GET_ALL_CATEGORY);
+        console.log("RESPONSE FROM FETCH ALL CATEGORY ", response )
         if (response?.data?.success) {
             toast.success("Categories fetched successfully");
+            console.log("DATA FROM ALL CATEGORY ", response.data.categories )
             return response.data.categories; 
         } else {
             throw new Error("Failed to fetch categories");
