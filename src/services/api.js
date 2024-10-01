@@ -15,6 +15,7 @@ export const categoryEndpoints = {
 export const productsEndpoints = {
     CREATE_PRODUCT : BASE_URL + "/product/createproduct",
     GET_PRODUCT_BY_ID : (id) => BASE_URL + `/product/getproductbyid/${id}`,
+    GET_PRODUCT_BY_CATEGORYID : (id) => BASE_URL + `/product/getallproductsbycategoryid/${id}`,
     GET_ALL_PRODUCTS : (id) => BASE_URL + "/product/getallproducts",
     UPDATE_PRODUCTS_BY_ID : (id) => BASE_URL + `/product/updateproductbyid/${id}`,
     DELETE_BY_ID : (id) => BASE_URL + `/product/deleteproductbyid/${id}`

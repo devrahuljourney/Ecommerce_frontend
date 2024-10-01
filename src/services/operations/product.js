@@ -1,9 +1,9 @@
 
 
 import { toast } from 'react-toastify';
-import { apiconnector } from './apiconnector';
+import { apiconnector } from '../apiconnector';
 import { productsEndpoints } from '../api';
-const {CREATE_PRODUCT, GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID,UPDATE_PRODUCTS_BY_ID, DELETE_BY_ID} = productsEndpoints
+const {CREATE_PRODUCT, GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID,UPDATE_PRODUCTS_BY_ID, DELETE_BY_ID, GET_PRODUCT_BY_CATEGORYID} = productsEndpoints
 
 export const createProduct = async (productData) => {
     const toastId = toast.loading("Creating product...");
@@ -32,6 +32,26 @@ export const fetchProductById = async (id) => {
         if (response?.data?.success) {
             toast.success("Product fetched successfully");
             return response.data.product;
+        } else {
+            throw new Error("Product not found");
+        }
+    } catch (error) {
+        toast.error("Failed to fetch product");
+        console.error("FETCH PRODUCT ERROR:", error);
+        return null;
+    } finally {
+        toast.dismiss(toastId);
+    }
+};
+
+export const fetchProductByCategoryId = async (id) => {
+    const toastId = toast.loading("Loading product...");
+    try {
+        const response = await apiconnector("GET", GET_PRODUCT_BY_CATEGORYID(id));
+        console.log("RESPONSE FROM PRODUCT BY CATEGORY : ", response)
+        if (response?.data?.success) {
+            toast.success("Product fetched successfully");
+            return response.data.products;
         } else {
             throw new Error("Product not found");
         }
