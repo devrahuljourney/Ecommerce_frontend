@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchAllCategories } from '../../services/operations/category';
 import { FiMoreHorizontal } from "react-icons/fi";
 import { fetchProductByCategoryId } from '../../services/operations/product';
-import { setProductData } from '../../slices/productSlice';
+import { setProductData,setBanner } from '../../slices/productSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function Category() {
@@ -22,10 +22,12 @@ export default function Category() {
     };
     const dispatch = useDispatch();
 
+
     const fetchProductDetails = async(selectedCategory) => {
         try {
             const response = await fetchProductByCategoryId(selectedCategory);
-            dispatch(setProductData(response));
+            dispatch(setBanner(response[0].banner))
+            dispatch(setProductData(response[0].products));
             console.log("Product data from category component : ", productData);
         } catch (error) {
             console.log("Error in fetching product by category: ", error);
@@ -38,6 +40,7 @@ export default function Category() {
 
     useEffect(() => {
         fetchProductDetails(selectedCategory);
+        console.log("Product data from category component : ", productData);
     }, [selectedCategory]);
 
     const loadNext = () => {
@@ -94,6 +97,8 @@ export default function Category() {
                     </div>
                 }
             </div>
+
+            
         </div>
     );
 }
