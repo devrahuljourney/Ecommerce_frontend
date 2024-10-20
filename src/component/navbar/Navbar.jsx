@@ -1,30 +1,67 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { MdPhone, MdEmail } from 'react-icons/md';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaWhatsapp, FaBars, FaTimes } from 'react-icons/fa';
 import { FaSignInAlt, FaUserPlus } from 'react-icons/fa';
 import { CiSearch, CiShoppingCart } from "react-icons/ci";
 import Button from '../common/Button';
 import logo from "../../assets/Logo (1).png";
 import logoName from "../../assets/Indiashop.png";
 import { IoMdCart } from "react-icons/io";
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaWhatsapp, FaBars, FaTimes } from 'react-icons/fa';
+import { setProductData, setBanner, setCategory } from '../../slices/productSlice';
+import { searchAll } from '../../services/operations/search';
+import { useDispatch } from 'react-redux';
 
 export default function Navbar() {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
+
+  
+  
   const submitHandler = () => {
     navigate("/become-seller");
   };
 
+  
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // navigate(`/search?q=${searchQuery}`);
+      searchProducts(searchQuery)
+
+      window.scroll({
+        top: 600,
+        left: 0,
+        behavior: "smooth",
+      });
+      toggleMenu()
+    }
+    
+  };
+
+  const dispatch = useDispatch();
+
+  const searchProducts = async (q) => {
+    try {
+      const response = await searchAll(q)
+      dispatch(setProductData(response));
+    } catch (error) {
+      console.error("Error searching products: ", error);
+    }
   };
 
   return (
     <div>
       {/* Top Navbar - Hidden in mobile view */}
-      <div className='bg-black text-[14px]  p-2 md:px-[8%] text-white flex flex-row justify-between items-center w-full hidden md:flex'>
+      <div className='bg-black text-[14px] p-2 md:px-[8%] text-white flex flex-row justify-between items-center w-full hidden md:flex'>
+        {/* Contact and social icons */}
         <div className='flex w-[50%] justify-center items-center space-x-4'>
           <p className='flex items-center'>
             <a href="tel:+1234567890" className='flex justify-center flex-row items-center'>
@@ -49,6 +86,7 @@ export default function Navbar() {
             </Link>
           </div>
 
+          {/* Social media icons */}
           <div className='flex flex-row gap-3'>
             <a href="#" target="_blank" rel="noopener noreferrer">
               <FaFacebook className='hover:text-green-500' />
@@ -70,7 +108,7 @@ export default function Navbar() {
       </div>
 
       {/* Main Navbar */}
-      <div className='py-2  w-[80%] lg:ml-[17%] mx-auto flex flex-row justify-between md:justify-center items-center'>
+      <div className='py-2 w-[80%] lg:ml-[17%] mx-auto flex flex-row justify-between md:justify-center items-center'>
         <NavLink to="/" className="flex lg:w-[10%] md:w-[30%] gap-2">
           <img src={logo} alt='logo' />
           <img src={logoName} alt='logoName' />
@@ -87,11 +125,19 @@ export default function Navbar() {
           <NavLink to="/category" className={({ isActive }) => isActive ? "text-green font-semibold" : "text-gray-400 font-semibold hover:text-green-500"}>
             CATEGORY
           </NavLink>
-          <div className='w-[25%] flex flex-row justify-center items-center border-2 gap-2 rounded-lg border-gray-300 px-2 py-1'>
-            <CiSearch style={{width:"25px", height:"25px"}} className='text-gray-500' />
-            <input placeholder='Search for anything' className='w-full outline-none bg-transparent' />
-          </div>
-          <IoMdCart style={{width:"25px", height:"25px"}} className='text-green text-2xl' />
+
+          {/* Search Form */}
+          <form onSubmit={handleSearchSubmit} className='w-[25%] flex flex-row justify-center items-center border-2 gap-2 rounded-lg border-gray-300 px-2 py-1'>
+            <CiSearch style={{ width: "25px", height: "25px" }} className='text-gray-500' />
+            <input
+              placeholder='Search for anything'
+              className='w-full outline-none bg-transparent'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)} // Update state on input change
+            />
+          </form>
+
+          <IoMdCart style={{ width: "27px", height: "27px" }} className='text-green text-2xl' />
           <Button onClick={submitHandler} content={"Become a Seller"} icon={"CiShop"} />
         </div>
 
@@ -110,10 +156,15 @@ export default function Navbar() {
 
         <nav className='flex flex-col p-4'>
           {/* Search on Top in Mobile View */}
-          <div className='flex flex-row items-center border-2 gap-2 rounded-lg border-gray-300 p-2 mb-4'>
+          <form onSubmit={handleSearchSubmit} className='flex flex-row items-center border-2 gap-2 rounded-lg border-gray-300 p-2 mb-4'>
             <CiSearch />
-            <input placeholder='Search for anything' className="bg-black text-white w-full outline-none" />
-          </div>
+            <input
+              placeholder='Search for anything'
+              className="bg-black text-white w-full outline-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </form>
 
           {/* Navigation Links */}
           <NavLink to="/" className="py-2 hover:text-green-500" onClick={toggleMenu}>HOME</NavLink>
@@ -129,7 +180,7 @@ export default function Navbar() {
           </div>
 
           {/* Login and Register at Bottom */}
-          <div className='flex shadow-sm  shadow-gray-200 absolute bottom-0 w-full left-0 p-2 flex-row py-2 justify-between'>
+          <div className='flex shadow-sm shadow-gray-200 absolute bottom-0 w-full left-0 p-2 flex-row py-2 justify-between'>
             <Link to='/login' className='flex flex-row justify-center items-center py-2 hover:text-green-500' onClick={toggleMenu}>
               <FaSignInAlt className='mr-2' /> Login
             </Link>

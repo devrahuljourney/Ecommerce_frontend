@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 export default function CategoryProduct() {
-    const { banner, productData } = useSelector((state) => state.product);
+    const { banner, productData, selectedCategory } = useSelector((state) => state.product);
 
     
     const [visibleProducts, setVisibleProducts] = useState(6);
@@ -13,7 +13,7 @@ export default function CategoryProduct() {
     }, [productData]);
 
     
-    const placeholderImage = "https://via.placeholder.com/150"; // Replace with your own placeholder URL
+    const placeholderImage = "https://via.placeholder.com/150"; 
 
     
     const loadMoreProducts = () => {
@@ -40,10 +40,12 @@ export default function CategoryProduct() {
                     productData ? (
                         <div className='flex gap-5 flex-col justify-center items-start'>
                            <p className=' font-bold text-[24px] '>Choose what you are looking for</p>
-                           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full' >
+                           <div className='grid place-content-center  grid-cols-2 md:grid-cols-3 gap-6 w-full' >
                               {
                                 productData.slice(0, visibleProducts).map((data) => (
-                                    <Link className='w-full flex flex-col justify-center items-start' key={data?._id} to={`/product/${data?._id}`}>
+                                    <Link onClick={() => {
+                                        window.scrollTo(0, 0);
+                                    }} className='md:w-[320px] sm:w-[250px] w-[150px] flex flex-col justify-center items-center md:items-start' key={data?._id} to={`/product/${selectedCategory}/${data.name}/${data?._id}`}>
                                         <div>
                                             
                                             <img className=' w-full h-full bg-cover '
@@ -53,7 +55,10 @@ export default function CategoryProduct() {
                                         </div>
                                         <div className=' p-2 ' >
                                             <p className=' text-[20px] font-bold ' >{data?.name}</p>
-                                            <p className=' text-[14px] font-semibold text-gray-500 '>{data?.state}</p>
+                                            <p className=' text-[16px] font-semibold text-[#949494] '>{data?.about?.slice(0, 20) || ""}...</p>
+
+ 
+                                            <p className=' text-[16px] font-semibold text-[#949494] '>{data?.state}</p>
                                             <p className=' text-[17px] font-bold '> ₹ {data?.price}</p>
                                         </div>
                                     </Link>

@@ -4,7 +4,8 @@ import { act } from "react"
 
 const initialState = {
     productData : [],
-    banner : null
+    banner : null,
+    selectedCategory : null
 }
 
 const productSlice = createSlice({
@@ -16,9 +17,12 @@ const productSlice = createSlice({
         },
         setBanner : (state,action) => {
             state.banner = action.payload
+        },
+        setCategory : (state, action) => {
+            state.selectedCategory = action.payload
         }
     }
 })
 
-export const {setProductData, setBanner} = productSlice.actions;
+export const {setProductData, setBanner, setCategory} = productSlice.actions;
 export default productSlice.reducer;

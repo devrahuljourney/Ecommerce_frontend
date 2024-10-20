@@ -18,9 +18,12 @@ export const productsEndpoints = {
     GET_PRODUCT_BY_CATEGORYID : (id) => BASE_URL + `/product/getallproductsbycategoryid/${id}`,
     GET_ALL_PRODUCTS : (id) => BASE_URL + "/product/getallproducts",
     UPDATE_PRODUCTS_BY_ID : (id) => BASE_URL + `/product/updateproductbyid/${id}`,
-    DELETE_BY_ID : (id) => BASE_URL + `/product/deleteproductbyid/${id}`
+    DELETE_BY_ID : (id) => BASE_URL + `/product/deleteproductbyid/${id}`,
+    FOR_YOU : BASE_URL + "/product/foryou"
 }
 
 export const searchEndpoints = {
-    SEARCH_BY_FILTER : (q) => BASE_URL + `/search/searbyfilter?q=${q}`
+    SEARCH_BY_FILTER : (q) => BASE_URL + `/search/searchbyfilter?q=${q}`,
+    SEARCH_ALL : (q) => BASE_URL + `/search/searchall?q=${q}`
+
 }

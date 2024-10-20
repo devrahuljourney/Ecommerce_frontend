@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { State, City } from 'country-state-city';
 import { fetchAllCategories } from '../../services/operations/category';
+import { searchByFilter } from '../../services/operations/search';
+import { setProductData } from '../../slices/productSlice';
+import { useDispatch } from 'react-redux';
 
 export default function SearchFilter() {
   const allStates = State.getStatesOfCountry("IN");
-  
+
   const [formData, setFormData] = useState({
     query: "",
     category: "",
-    state: "",
+    state: "", // state name
     city: ""
   });
 
   const [cities, setCities] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // Fetch categories
   const fetchCategory = async () => {
     try {
       const result = await fetchAllCategories();
@@ -25,104 +27,126 @@ export default function SearchFilter() {
     }
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-    
-    // If the state changes, update the city list based on selected state
+
     if (name === "state") {
-      const selectedState = allStates.find((s) => s.isoCode === value);
-      const citiesInState = City.getCitiesOfState("IN", value);
-      setCities(citiesInState);
+    
+      const selectedState = allStates.find((state) => state.name === value);
+      if (selectedState) {
+        const citiesInState = City.getCitiesOfState("IN", selectedState.isoCode); // Use isoCode to fetch cities
+        setCities(citiesInState);
+      }
     }
   };
 
-  // Handle form submission
+  const dispatch = useDispatch();
+
+  const searchHandler = async () => {
+    try {
+      const response = await searchByFilter(formData);  
+
+      if (response) {
+        dispatch(setProductData(response));
+      }
+      else {
+        dispatch(setProductData(null))
+      }
+      window.scroll({
+        top: 500,
+        left: 0,
+        behavior: "smooth",
+      });
+    } catch (error) {
+      console.log('Error in search filter ', error);
+    }
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log('Form Submitted:', formData);
-    // Handle form submission logic
+    if (!formData.query) {
+      return alert("Please enter a search keyword!");
+    }
+    searchHandler();
   };
 
   useEffect(() => {
     fetchCategory();
-  }, []); // Call only once when the component mounts
+  }, []);
 
   return (
-    <form onSubmit={submitHandler} className="flex  md:w-[70%] p-3 flex-col md:flex-row justify-evenly item-center bg-white rounded-xl">
-      {/* Query Input */}
+    <form
+      onSubmit={submitHandler}
+      className="flex flex-col md:flex-row md:w-[70%] p-3 justify-evenly items-center bg-white rounded-xl md:space-y-0 space-y-2"
+    >
       <input
         type="text"
         name="query"
         value={formData.query}
         onChange={handleInputChange}
         placeholder="Enter ads keyword"
-        className="p-1 md:w-[15%] focus:outline-none border-none rounded"
+        className="p-2 w-full md:w-[15%] focus:outline-none border md:border-none border-gray-300 rounded"
       />
 
-      <div className='border-[1px] md:block hidden h-[30px]  mt-[1%] border-gray-400 '  ></div>
-
-      {/* Category Input */}
-      <select
-        name="category"
-        value={formData.category}
-        onChange={handleInputChange}
-        className="p-2 md:w-[15%] focus:outline-none border-none rounded"
-      >
-        <option className='text-gray-400 ' value="">Select Category</option>
-        {categories.map((data) => (
-          <option key={data.name} value={data.name}>
-            {data.name}
-          </option>
-        ))}
-      </select>
-      <div className='border-[1px] md:block hidden h-[30px]  mt-[1%] border-gray-400 '  ></div>
-
-      {/* State Dropdown */}
+<div className='border-[1px] md:block hidden h-[30px]  mt-[1%] border-gray-400 '  ></div>
+  
       <select
         name="state"
         value={formData.state}
         onChange={handleInputChange}
-        className="p-2 md:w-[15%] focus:outline-none border-none rounded"
+        className="p-2 w-full md:w-[15%] focus:outline-none md:border-none border border-gray-300 rounded"
       >
-        <option className='text-gray-400 ' value="">Select State</option>
+        <option value="">Select State</option>
         {allStates.map((state) => (
-          <option key={state.isoCode} value={state.isoCode}>
+          <option key={state.isoCode} value={state.name}>
             {state.name}
           </option>
         ))}
       </select>
-      <div className='border-[1px] md:block hidden h-[30px]  mt-[1%] border-gray-400 '  ></div>
 
-      {/* City Dropdown */}
+      <div className='border-[1px] md:block hidden h-[30px]  mt-[1%] border-gray-400 '  ></div>
+  
       <select
         name="city"
         value={formData.city}
         onChange={handleInputChange}
-        className="p-2 md:w-[15%] focus:outline-none border-none rounded"
+        className="p-2 w-full md:w-[15%] md:border-none focus:outline-none border border-gray-300 rounded"
       >
-        <option className='text-gray-400 ' value="">Select City</option>
+        <option value="">Select City</option>
         {cities.map((city) => (
           <option key={city.name} value={city.name}>
             {city.name}
           </option>
         ))}
       </select>
-      
 
-      
-
-      
+      <div className='border-[1px] md:block hidden h-[30px]  mt-[1%] border-gray-400 '  ></div>
+  
+      <select
+        name="category"
+        value={formData.category}
+        onChange={handleInputChange}
+        className="p-2 w-full md:w-[15%] md:border-none focus:outline-none border border-gray-300 rounded"
+      >
+        <option value="">Select Category</option>
+        {categories.map((data) => (
+          <option key={data.name} value={data.name}>
+            {data.name}
+          </option>
+        ))}
+      </select>
+  
       <button
         type="submit"
-        className="flex md:w-[15%] flex-row justify-center items-center py-[1%] font-bold bg-green rounded-lg text-white  gap-2"
+        className="w-full md:w-[15%] flex flex-row justify-center items-center py-2 font-bold bg-green rounded-lg text-white gap-2"
       >
         Search Now
       </button>
     </form>
   );
+  
 }

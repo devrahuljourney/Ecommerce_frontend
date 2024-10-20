@@ -3,7 +3,7 @@
 import { toast } from 'react-toastify';
 import { apiconnector } from '../apiconnector';
 import { productsEndpoints } from '../api';
-const {CREATE_PRODUCT, GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID,UPDATE_PRODUCTS_BY_ID, DELETE_BY_ID, GET_PRODUCT_BY_CATEGORYID} = productsEndpoints
+const {CREATE_PRODUCT,FOR_YOU, GET_ALL_PRODUCTS, GET_PRODUCT_BY_ID,UPDATE_PRODUCTS_BY_ID, DELETE_BY_ID, GET_PRODUCT_BY_CATEGORYID} = productsEndpoints
 
 export const createProduct = async (productData) => {
     const toastId = toast.loading("Creating product...");
@@ -83,6 +83,27 @@ export const fetchAllProducts = async () => {
         toast.dismiss(toastId);
     }
 };
+
+export const fetchForYouProducts = async () => {
+    const toastId = toast.loading("Loading products...");
+    try {
+        const response = await apiconnector("GET", FOR_YOU);
+        if (response?.data?.success) {
+            toast.success("Products fetched successfully");
+            console.log("FOR YOU " ,response.data )
+            return response.data.products; 
+        } else {
+            throw new Error("Failed to fetch products");
+        }
+    } catch (error) {
+        toast.error("Failed to fetch products");
+        console.error("FETCH ALL PRODUCTS ERROR:", error);
+        return null;
+    } finally {
+        toast.dismiss(toastId);
+    }
+};
+
 
 
 export const updateProductById = async (id, productData) => {
